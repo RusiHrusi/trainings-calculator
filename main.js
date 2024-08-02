@@ -24,8 +24,7 @@ app.on('window-all-closed', () => {
 
 ipcMain.on('write-to-file', async (event, {fileName, content}) => {
     try {
-        const buffer = Buffer.from(content, 'utf8');
-        await writeFile(fileName, buffer);
+        await writeFile(fileName, content, {encoding: 'utf8'});
         console.log(`File ${fileName} has been saved.`);
     } catch (error) {
         console.error(`Error writing file ${fileName}:`, error);

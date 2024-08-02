@@ -34,9 +34,18 @@ const App = () => {
         if (isElectron()) {
             // TODO: validate things
             const statistics = calcStatistics(allMoney, trainingDays, trainingsPerTrainer);
-            const exportBuffer = generateExportText(username, statistics);
+            const exportText = generateExportText(username, statistics);
+
+
+            const datetime = new Date().toLocaleDateString('en-GB', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            }).replace(/\//g, '-');
+            const fileName = `Export_${username}_${datetime}`;
             const {ipcRenderer} = window.require('electron');
-            ipcRenderer.send('write-to-file', {fileName: 'output.txt', content: exportBuffer.toString('utf8')});
+
+            ipcRenderer.send('write-to-file', {fileName: fileName, content: exportText});
             setResult('File has been saved!');
         } else {
             console.log('Not running in Electron environment');
