@@ -1,0 +1,81 @@
+# Compiled output
+dist/
+/dist
+/tmp
+/out-tsc
+
+# Dependencies
+node_modules
+
+# IDEs and editors
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+**/coverage
+npm-debug.log
+yarn-error.log
+testem.log
+*.log
+/typings
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Serverless
+.serverless
+.webpack
+
+# Others
+.jest
+.jest-cache
+.coverage
+
+# Package lock
+# package-lock.json
+
+# JetBrains
+.idea/dataSources.xml
+
+# AWS credentials
+.aws-credentials
+
+# Logs and telemetry
+/log/*
+!/log/.gitkeep
+log/*
+!log/.gitkeep
+telemetry.json
+
+# Local configs
+.env
+.env.*
+.npmrc
+
+.idea/conventionalCommit.xml
+
+cache-stats.json
+.cache
+.turbo/
+
+##########
+# Add your own rules here
+
+.ai
+/.idea/copilot/chatSessions
