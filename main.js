@@ -1,10 +1,10 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const {app, BrowserWindow, ipcMain} = require('electron');
 const {writeFile} = require("fs/promises");
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1280,
+        height: 720,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -22,9 +22,10 @@ app.on('window-all-closed', () => {
     }
 });
 
-ipcMain.on('write-to-file', async (event, { fileName, content }) => {
+ipcMain.on('write-to-file', async (event, {fileName, content}) => {
     try {
-        await writeFile(fileName, content);
+        const buffer = Buffer.from(content, 'utf8');
+        await writeFile(fileName, buffer);
         console.log(`File ${fileName} has been saved.`);
     } catch (error) {
         console.error(`Error writing file ${fileName}:`, error);
