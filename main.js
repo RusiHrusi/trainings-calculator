@@ -1,5 +1,6 @@
 const {app, BrowserWindow, ipcMain} = require('electron');
 const {writeFile} = require("fs/promises");
+const path = require('path');
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
@@ -11,7 +12,8 @@ function createWindow() {
         },
     });
 
-    mainWindow.loadFile('./dist/index.html');
+    const indexPath = path.join(__dirname, 'dist', 'index.html');
+    mainWindow.loadFile(indexPath);
 }
 
 app.on('ready', createWindow);
