@@ -2,6 +2,8 @@ const {app, BrowserWindow, ipcMain} = require('electron');
 const {writeFile} = require("fs/promises");
 const path = require('path');
 
+if (require('electron-squirrel-startup')) app.quit();
+
 function createWindow() {
     const mainWindow = new BrowserWindow({
         width: 1280,
