@@ -3,6 +3,7 @@ dist/
 /dist
 /tmp
 /out-tsc
+/out
 
 # Dependencies
 node_modules
@@ -14,6 +15,10 @@ node_modules
 *.launch
 .settings/
 *.sublime-workspace
+vcs.xml
+modules.xml
+.iml
+.idea
 
 # IDE - VSCode
 .vscode/*
