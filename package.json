@@ -7,6 +7,7 @@
   "scripts": {
     "start": "electron-forge start",
     "build": "webpack --mode development",
+    "watch": "webpack serve --mode development --open --port 8080",
     "electron-start": "chcp 65001 && electron .",
     "package": "electron-forge package",
     "make": "electron-forge make"
@@ -36,6 +37,7 @@
     "@electron-forge/plugin-auto-unpack-natives": "~7.4.0",
     "@electron-forge/plugin-fuses": "~7.4.0",
     "@electron/fuses": "~1.8.0",
+    "@svgr/webpack": "~8.1.0",
     "@types/webpack": "~5.28.5",
     "@types/webpack-dev-server": "~4.7.2",
     "electron": "~31.4.0",
