@@ -1,7 +1,11 @@
 import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import {calcStatistics, generateExportText} from "./Statistics";
-import {Button, Grid, Stack, TextField} from "@mui/material";
+import {Button, Divider, Grid, Stack, TextField} from "@mui/material";
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+// @ts-ignore
+import Logo from "./assets/logo1.svg";
 
 declare global {
     interface Process {
@@ -14,56 +18,55 @@ declare global {
     }
 }
 
-const isElectron = () => {
-    return typeof window !== 'undefined' && window.process && window.process.type === 'renderer';
-};
+const isElectron = () => typeof window !== 'undefined' && window.process && window.process.type === 'renderer';
 
-// @ts-ignore
-const LabelledTextField = ({label, width, inputProps}) => (
-    <Grid
-        item
-        xs={12}
-        display="flex"
-        flexDirection="row"
-        alignItems="center"
-        style={{border: "1px dashed red"}}
-    >
-        <Grid item xs={4} style={{padding: "10px"}}>
-            <label style={{fontWeight: "bold"}}>{label}</label>
+const fontHeader = `"Roboto","Helvetica","Arial",sans-serif`;
+
+interface LabelledTextFieldProps {
+    label: string;
+    width: string;
+    inputProps?: object;
+}
+
+const LabelledTextField: React.FC<LabelledTextFieldProps> = ({label, width, inputProps}) => (
+    <Grid item xs={12} display="flex" flexDirection="row" alignItems="center" justifyContent="center">
+        <label style={{fontFamily: fontHeader, paddingRight: "10px"}}>{label}</label>
+        <TextField id="outlined-basic" variant="outlined" style={{width, paddingRight: "10px"}} inputProps={inputProps}/>
+    </Grid>
+);
+
+interface TrainerFieldProps {
+    name: string;
+}
+
+const TrainerField: React.FC<TrainerFieldProps> = ({name}) => (
+    <Grid item xs={12} display="flex" flexDirection="row" alignItems="center">
+        <Grid item xs={6} style={{paddingRight: "10px"}}>
+            <FormControlLabel control={<Checkbox checked={false} onChange={() => {
+            }}/>} label={name}/>
         </Grid>
-        <Grid item xs={8} style={{padding: "10px"}}>
-            <TextField
-                id="outlined-basic"
-                variant="outlined"
-                style={{width: width}}
-                inputProps={inputProps}
-            />
+        <Grid item xs={3} style={{padding: "10px"}}>
+            <TextField id="outlined-basic" variant="outlined" style={{width: '50px'}}/>
+        </Grid>
+        <Grid item xs={3}></Grid>
+    </Grid>
+);
+
+const TrainerField2: React.FC<TrainerFieldProps> = ({name}) => (
+    <Grid item xs={12} display="flex" flexDirection="row" alignItems="center">
+        <Grid item xs={3}></Grid>
+        <Grid item xs={6} style={{paddingRight: "10px"}}>
+            <FormControlLabel control={<Checkbox checked={false} onChange={() => {
+            }}/>} label={name}/>
+        </Grid>
+        <Grid item xs={3} style={{padding: "10px"}}>
+            <TextField id="outlined-basic" variant="outlined" style={{width: '50px'}}/>
         </Grid>
     </Grid>
 );
 
-// @ts-ignore
-const TrainerField = ({name}) => (
-    <Grid
-        item
-        xs={12}
-        display="flex"
-        flexDirection="row"
-        alignItems="center"
-        style={{border: "1px dashed red"}}
-    >
-        <Grid item xs={6} style={{padding: "10px"}}>
-            <label>{name}:</label>
-        </Grid>
-        <Grid item xs={6} style={{padding: "10px"}}>
-            <TextField id="outlined-basic" variant="outlined"/>
-        </Grid>
-    </Grid>
-);
-
-const App = () => {
+const App: React.FC = () => {
     const [result, setResult] = useState('');
-    // const [username, setUsername] = useState('');
     const username = 'RusHrus';
 
     const allMoney = 5764;
@@ -76,10 +79,8 @@ const App = () => {
 
     const calculateAndGenerateExport = async () => {
         if (isElectron()) {
-            // TODO: validate things
             const statistics = calcStatistics(allMoney, trainingDays, trainingsPerTrainer);
             const exportText = generateExportText(username, statistics);
-
 
             const datetime = new Date().toLocaleDateString('en-GB', {
                 year: 'numeric',
@@ -89,15 +90,14 @@ const App = () => {
             const fileName = `Export_${username}_${datetime}`;
             const {ipcRenderer} = window.require('electron');
 
-            ipcRenderer.send('write-to-file', {fileName: fileName, content: exportText});
+            ipcRenderer.send('write-to-file', {fileName, content: exportText});
             setResult('File has been saved!');
         } else {
             console.log('Not running in Electron environment');
         }
     };
 
-    // @ts-ignore
-    const handleKeyPress = (event) => {
+    const handleKeyPress = (event: React.KeyboardEvent) => {
         const charCode = event.which ? event.which : event.keyCode;
         if (charCode < 48 || charCode > 57) {
             event.preventDefault();
@@ -106,77 +106,96 @@ const App = () => {
 
     return (
         <>
-            <Grid container spacing={2} style={{border: "1px dashed red"}}>
-                <Grid
-                    item
-                    xs={6}
-                    display="flex"
-                    flexDirection="column"
-                    gap="10px"
-                    style={{border: "1px dashed red"}}
-                >
-                    <LabelledTextField
-                        label="Author:"
-                        width="250px"
-                        inputProps={{maxLength: 25}}
-                    />
-                    <LabelledTextField
-                        label="All money:"
-                        width="150px"
-                        inputProps={{onKeyPress: handleKeyPress, maxLength: 6}}
-                    />
-                    <LabelledTextField
-                        label="Training days:"
-                        width="50px"
-                        inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
-                    />
+            <Grid item xs={12} style={{height: '150px'}}></Grid>
+            <Grid container spacing={2}>
+                <Grid item xs={1}></Grid>
+                <Grid item xs={10}>
+                    <Grid item xs={12} display="flex" flexDirection="row">
+                        <Grid item xs={8} display="flex" flexDirection="column">
+                            <Grid item xs={12} display="flex" justifyContent="center"
+                                  alignItems="center">
+                                <label style={{fontWeight: "bold", fontFamily: fontHeader}}>Параметри:</label>
+                            </Grid>
 
-                    <Grid
-                        item
-                        xs={12}
-                        display="flex"
-                        flexDirection="row"
-                        alignItems="center"
-                        style={{border: "1px dashed red"}}
-                    >
-                        <Grid
-                            item
-                            xs={12}
-                            style={{padding: "10px"}}
-                            display="flex"
-                            justifyContent="center"
-                            alignItems="center"
-                        >
-                            <label style={{fontWeight: "bold"}}>Trainers:</label>
+                            <Grid item xs={12} display="flex" flexDirection="row" style={{padding: "20px"}}>
+                                <Grid item xs={4}>
+                                    <LabelledTextField label="Изготвил:" width="150px" inputProps={{maxLength: 25}}/>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <LabelledTextField label="Пари:" width="100px"
+                                                       inputProps={{onKeyPress: handleKeyPress, maxLength: 6}}/>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <LabelledTextField label="Тренировки:" width="50px"
+                                                       inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}/>
+                                </Grid>
+                            </Grid>
+
+                            <Divider/>
+
+                            <Grid item xs={12} style={{padding: "20px"}} display="flex" justifyContent="center"
+                                  alignItems="center">
+                                <label style={{fontWeight: "bold", fontFamily: fontHeader}}>Треньори:</label>
+                            </Grid>
+
+                            <Grid item xs={12} display="flex" flexDirection="row" style={{padding: "20px", paddingTop: "0px"}}>
+                                <Grid item xs={6} display="flex" flexDirection="column">
+                                    <TrainerField name={'Алекс'}/>
+                                    <TrainerField name={'Йоан'}/>
+                                    <TrainerField name={'Калоян'}/>
+                                    <TrainerField name={'Кико'}/>
+                                </Grid>
+                                <Divider orientation="vertical" flexItem/>
+                                <Grid item xs={6} display="flex" flexDirection="column">
+                                    <TrainerField2 name={'Марио'}/>
+                                    <TrainerField2 name={'Пеца'}/>
+                                    <TrainerField2 name={'Рус'}/>
+                                    <TrainerField2 name={'Стели'}/>
+                                </Grid>
+                            </Grid>
+
+                            <Divider/>
+
+                            <Grid item xs={12} style={{padding: "20px"}} display="flex" justifyContent="center"
+                                  alignItems="center">
+                                <label style={{fontWeight: "bold", fontFamily: fontHeader}}>Експорт:</label>
+                            </Grid>
+
+                            <Grid item xs={12} display="flex" justifyContent="center"
+                                  style={{paddingLeft: "20px", paddingRight: "20px"}}
+                                  alignItems="center">
+                                <Grid item xs={3}>
+                                    <Stack direction="row">
+                                        <Button variant="contained"
+                                                onClick={calculateAndGenerateExport}
+                                                sx={{
+                                                    WebkitTextStrokeWidth: 'medium',
+                                                    width: '-webkit-fill-available'
+                                                }}>Calculate</Button>
+                                        <p>{result}</p>
+                                    </Stack>
+                                </Grid>
+                                <Grid item xs={1}></Grid>
+                                <Grid item xs={8}>
+                                    <TextField
+                                        id="outlined-basic"
+                                        variant="outlined"
+                                        value="Тука ще се показва дали е успешно или не"
+                                        InputProps={{ readOnly: true }}
+                                        sx={{width: '-webkit-fill-available'}}
+                                    />
+                                </Grid>
+                            </Grid>
+
+                        </Grid>
+
+                        <Grid item xs={4} display="flex" justifyContent="center" alignItems="center">
+                            <Logo width="80%" height="80%"/>
                         </Grid>
                     </Grid>
-                    <TrainerField name="Yoan"/>
-                    <TrainerField name="Rus"/>
                 </Grid>
-
-                <Grid
-                    item
-                    xs={6}
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    style={{border: "1px dashed red"}}
-                >
-                    <label>SHTIBIDI DOP DOP:</label>
-                </Grid>
-
-                <Grid item xs={12} style={{border: "1px dashed red"}}>
-                    <label>
-                        Lorem ipsum odor amet, consectetuer adipiscing elit. Mattis maximus
-                        sodales cursus vivamus aenean ligula.
-                    </label>
-                </Grid>
+                <Grid item xs={1}></Grid>
             </Grid>
-
-            <Stack spacing={2} direction="row">
-                <Button variant="contained" onClick={calculateAndGenerateExport}>Calculate</Button>
-                <p>{result}</p>
-            </Stack>
         </>
     );
 };
