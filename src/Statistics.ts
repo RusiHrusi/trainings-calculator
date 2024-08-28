@@ -1,23 +1,27 @@
 import {format} from 'date-fns';
 
 export interface Statistics {
-    allMoney: number,
-    trainingDays: number,
-    clubMoney: number,
-    totalTrainersMoney: number,
+    allMoney: number;
+    trainingDays: number;
+    clubMoney: number;
+    totalTrainersMoney: number;
     payments: {
-        [key: string]: number,
-    },
+        [key: string]: number;
+    };
     trainingsPerTrainer: {
-        [key: string]: number,
-    }
+        [key: string]: number;
+    };
 }
 
-export const calcStatistics = (allMoney: number, trainingDays: number, trainingsPerTrainer: {
-    [key: string]: number
-}): Statistics => {
-    let clubMoney = allMoney / 2 - (allMoney / 2 % 10) + (allMoney % 10)
-    let trainersMoney = allMoney / 2 - (allMoney / 2 % 10)
+export const calcStatistics = (
+    allMoney: number,
+    trainingDays: number,
+    trainingsPerTrainer: {
+        [key: string]: number;
+    },
+): Statistics => {
+    let clubMoney = allMoney / 2 - ((allMoney / 2) % 10) + (allMoney % 10);
+    let trainersMoney = allMoney / 2 - ((allMoney / 2) % 10);
 
     const x = Object.values(trainingsPerTrainer).reduce((acc, value) => acc + value, 0);
 
@@ -27,17 +31,17 @@ export const calcStatistics = (allMoney: number, trainingDays: number, trainings
 
     const moneyPerTraining = trainersMoney / x;
 
-    const trainersMoneyMap: { [key: string]: number } = {};
+    const trainersMoneyMap: {[key: string]: number} = {};
 
     Object.keys(trainingsPerTrainer).forEach((t) => {
         trainersMoneyMap[t] = trainingsPerTrainer[t] * moneyPerTraining;
-    })
+    });
 
     let surplusSum = 0;
 
     Object.keys(trainersMoneyMap).forEach((t) => {
         surplusSum += trainersMoneyMap[t] % 10;
-        trainersMoneyMap[t] = trainersMoneyMap[t] - trainersMoneyMap[t] % 10;
+        trainersMoneyMap[t] = trainersMoneyMap[t] - (trainersMoneyMap[t] % 10);
     });
 
     if (!(surplusSum === 10 || surplusSum === 0)) {
@@ -53,8 +57,8 @@ export const calcStatistics = (allMoney: number, trainingDays: number, trainings
         totalTrainersMoney: Object.values(trainersMoneyMap).reduce((acc, value) => acc + value, 0),
         payments: trainersMoneyMap,
         trainingsPerTrainer,
-    }
-}
+    };
+};
 
 export const generateExportText = (userName: string, statistics: Statistics) => {
     const now = new Date();
@@ -78,4 +82,4 @@ export const generateExportText = (userName: string, statistics: Statistics) => 
     }
 
     return exportText;
-}
+};
