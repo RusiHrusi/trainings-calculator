@@ -30,6 +30,8 @@ const App: React.FC = () => {
     const [allMoney, setAllMoney] = useState<number>(0);
     const [trainingDays, setTrainingDays] = useState<number>(0);
 
+    const [trainingsPerTrainer, setTrainingsPerTrainer] = useState({});
+
     const handleSelectChange = (event: React.ChangeEvent<{name?: string; value: unknown}>) => {
         setSelectedAuthor(event.target.value as string);
     };
@@ -42,13 +44,29 @@ const App: React.FC = () => {
         setTrainingDays(parseInt(event.target.value as string));
     };
 
+    const addTrainer = (trainerName: string) => {
+        setTrainingsPerTrainer((prevState) => ({
+            ...prevState,
+            [trainerName]: 0,
+        }));
+    };
+
+    const removeTrainer = (name: string) => {
+        setTrainingsPerTrainer((prevState) => {
+            const newState = {...prevState};
+            // @ts-ignore
+            delete newState[name];
+            return newState;
+        });
+    };
+
     // const allMoney = 5764;
     // const trainingDays = 9;
-    const trainingsPerTrainer = {
-        mario: 6,
-        yoan: 3,
-        rus: 9,
-    };
+    // const trainingsPerTrainer = {
+    //     mario: 6,
+    //     yoan: 3,
+    //     rus: 9,
+    // };
 
     useEffect(() => {
         console.log('Selected author: ', selectedAuthor);
@@ -61,6 +79,10 @@ const App: React.FC = () => {
     useEffect(() => {
         console.log('Training days: ', trainingDays);
     }, [trainingDays]);
+
+    useEffect(() => {
+        console.log('Trainings per trainer: ', JSON.stringify(trainingsPerTrainer));
+    }, [trainingsPerTrainer]);
 
     const calculateAndGenerateExport = async () => {
         if (isElectron()) {
@@ -157,22 +179,32 @@ const App: React.FC = () => {
                                     <TrainerField
                                         name={'Алекс'}
                                         inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                        addTrainer={addTrainer}
+                                        removeTrainer={removeTrainer}
                                     />
                                     <TrainerField
                                         name={'Йоан'}
                                         inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                        addTrainer={addTrainer}
+                                        removeTrainer={removeTrainer}
                                     />
                                     <TrainerField
                                         name={'Калоян'}
                                         inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                        addTrainer={addTrainer}
+                                        removeTrainer={removeTrainer}
                                     />
                                     <TrainerField
                                         name={'Кико'}
                                         inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                        addTrainer={addTrainer}
+                                        removeTrainer={removeTrainer}
                                     />
                                     <TrainerField
                                         name={'Марио'}
                                         inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                        addTrainer={addTrainer}
+                                        removeTrainer={removeTrainer}
                                     />
                                 </Grid>
                                 <Divider orientation='vertical' flexItem />
@@ -180,18 +212,26 @@ const App: React.FC = () => {
                                     <TrainerField2
                                         name={'Марто'}
                                         inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                        addTrainer={addTrainer}
+                                        removeTrainer={removeTrainer}
                                     />
                                     <TrainerField2
                                         name={'Пеца'}
                                         inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                        addTrainer={addTrainer}
+                                        removeTrainer={removeTrainer}
                                     />
                                     <TrainerField2
                                         name={'Рус'}
                                         inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                        addTrainer={addTrainer}
+                                        removeTrainer={removeTrainer}
                                     />
                                     <TrainerField2
                                         name={'Стели'}
                                         inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                        addTrainer={addTrainer}
+                                        removeTrainer={removeTrainer}
                                     />
                                     <Grid item xs={12} display='flex' flexDirection='row' alignItems='center' />
                                 </Grid>

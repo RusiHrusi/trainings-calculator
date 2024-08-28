@@ -59,13 +59,23 @@ export const LabeledSelection: React.FC<LabelledSelection> = ({label, width, opt
 export interface TrainerFieldProps {
     name: string;
     inputProps: object;
+    addTrainer: (name: string) => void;
+    removeTrainer: (name: string) => void;
 }
 
-export const TrainerField: React.FC<TrainerFieldProps> = ({name, inputProps}) => {
+export const TrainerField: React.FC<TrainerFieldProps> = ({name, inputProps, addTrainer, removeTrainer}) => {
     const [checked, setChecked] = useState(false);
 
     const handleCheckboxChange = () => {
         setChecked(!checked);
+        if (checked) {
+            removeTrainer(name);
+            console.log('Trainer removed: ', name);
+            // TODO: investigate why opposite of checked???
+        } else {
+            addTrainer(name);
+            console.log('Trainer added: ', name);
+        }
     };
 
     return (
@@ -91,11 +101,19 @@ export const TrainerField: React.FC<TrainerFieldProps> = ({name, inputProps}) =>
     );
 };
 
-export const TrainerField2: React.FC<TrainerFieldProps> = ({name, inputProps}) => {
+export const TrainerField2: React.FC<TrainerFieldProps> = ({name, inputProps, addTrainer, removeTrainer}) => {
     const [checked, setChecked] = useState(false);
 
     const handleCheckboxChange = () => {
         setChecked(!checked);
+        if (checked) {
+            removeTrainer(name);
+            console.log('Trainer removed: ', name);
+            // TODO: investigate why opposite of checked???
+        } else {
+            addTrainer(name);
+            console.log('Trainer added: ', name);
+        }
     };
 
     return (
