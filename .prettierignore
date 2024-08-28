@@ -1,0 +1,24 @@
+dist
+coverage
+.coverage
+origins
+exports
+assets
+log
+node_modules
+.git
+.idea
+*/*/node_modules
+*/*/packages
+
+##########
+# Add your own rules here
+
+
+dist
+coverage
+.coverage
+origins
+exports
+assets
+log
