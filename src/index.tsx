@@ -1,10 +1,11 @@
+import {Button, Divider, Grid, Stack, TextField} from '@mui/material';
 import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom/client';
-import {calcStatistics, generateExportText} from "./Statistics";
-import {Button, Divider, Grid, Stack, TextField} from "@mui/material";
+
 // @ts-ignore
-import Logo from "./assets/logo1.svg";
-import {fontHeader, LabeledSelection, LabelledTextField, TrainerField, TrainerField2} from "./components";
+import Logo from './assets/logo1.svg';
+import {fontHeader, LabeledSelection, LabelledTextField, TrainerField, TrainerField2} from './components';
+import {calcStatistics, generateExportText} from './Statistics';
 
 declare global {
     interface Process {
@@ -29,15 +30,15 @@ const App: React.FC = () => {
     const [allMoney, setAllMoney] = useState<number>(0);
     const [trainingDays, setTrainingDays] = useState<number>(0);
 
-    const handleSelectChange = (event: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+    const handleSelectChange = (event: React.ChangeEvent<{name?: string; value: unknown}>) => {
         setSelectedAuthor(event.target.value as string);
     };
 
-    const handleMoneyChange = (event: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+    const handleMoneyChange = (event: React.ChangeEvent<{name?: string; value: unknown}>) => {
         setAllMoney(parseInt(event.target.value as string));
     };
 
-    const handleTrainingsCountChange = (event: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+    const handleTrainingsCountChange = (event: React.ChangeEvent<{name?: string; value: unknown}>) => {
         setTrainingDays(parseInt(event.target.value as string));
     };
 
@@ -47,7 +48,7 @@ const App: React.FC = () => {
         mario: 6,
         yoan: 3,
         rus: 9,
-    }
+    };
 
     useEffect(() => {
         console.log('Selected author: ', selectedAuthor);
@@ -66,11 +67,13 @@ const App: React.FC = () => {
             const statistics = calcStatistics(allMoney, trainingDays, trainingsPerTrainer);
             const exportText = generateExportText(username, statistics);
 
-            const datetime = new Date().toLocaleDateString('en-GB', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-            }).replace(/\//g, '-');
+            const datetime = new Date()
+                .toLocaleDateString('en-GB', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                })
+                .replace(/\//g, '-');
             const fileName = `Export_${username}_${datetime}`;
             const {ipcRenderer} = window.require('electron');
 
@@ -94,14 +97,13 @@ const App: React.FC = () => {
             <Grid container spacing={2}>
                 <Grid item xs={1}></Grid>
                 <Grid item xs={10}>
-                    <Grid item xs={12} display="flex" flexDirection="row">
-                        <Grid item xs={8} display="flex" flexDirection="column">
-                            <Grid item xs={12} display="flex" justifyContent="center"
-                                  alignItems="center">
-                                <label style={{fontWeight: "bold", fontFamily: fontHeader}}>Параметри:</label>
+                    <Grid item xs={12} display='flex' flexDirection='row'>
+                        <Grid item xs={8} display='flex' flexDirection='column'>
+                            <Grid item xs={12} display='flex' justifyContent='center' alignItems='center'>
+                                <label style={{fontWeight: 'bold', fontFamily: fontHeader}}>Параметри:</label>
                             </Grid>
 
-                            <Grid item xs={12} display="flex" flexDirection="row" style={{padding: "20px"}}>
+                            <Grid item xs={12} display='flex' flexDirection='row' style={{padding: '20px'}}>
                                 <Grid item xs={4}>
                                     <LabeledSelection
                                         label={'Изготвил:'}
@@ -113,8 +115,8 @@ const App: React.FC = () => {
                                 </Grid>
                                 <Grid item xs={4}>
                                     <LabelledTextField
-                                        label="Пари:"
-                                        width="100px"
+                                        label='Пари:'
+                                        width='100px'
                                         inputProps={{onKeyPress: handleKeyPress, maxLength: 6}}
                                         value={allMoney ? allMoney.toString() : ''}
                                         onChange={handleMoneyChange}
@@ -122,8 +124,8 @@ const App: React.FC = () => {
                                 </Grid>
                                 <Grid item xs={4}>
                                     <LabelledTextField
-                                        label="Тренировки:"
-                                        width="50px"
+                                        label='Тренировки:'
+                                        width='50px'
                                         inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
                                         value={trainingDays ? trainingDays.toString() : ''}
                                         onChange={handleTrainingsCountChange}
@@ -131,78 +133,121 @@ const App: React.FC = () => {
                                 </Grid>
                             </Grid>
 
-                            <Divider/>
+                            <Divider />
 
-                            <Grid item xs={12} style={{padding: "20px"}} display="flex" justifyContent="center"
-                                  alignItems="center">
-                                <label style={{fontWeight: "bold", fontFamily: fontHeader}}>Треньори:</label>
+                            <Grid
+                                item
+                                xs={12}
+                                style={{padding: '20px'}}
+                                display='flex'
+                                justifyContent='center'
+                                alignItems='center'
+                            >
+                                <label style={{fontWeight: 'bold', fontFamily: fontHeader}}>Треньори:</label>
                             </Grid>
 
-                            <Grid item xs={12} display="flex" flexDirection="row"
-                                  style={{padding: "20px", paddingTop: "0px"}}>
-                                <Grid item xs={6} display="flex" flexDirection="column">
-                                    <TrainerField name={'Алекс'}
-                                                  inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}/>
-                                    <TrainerField name={'Йоан'}
-                                                  inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}/>
-                                    <TrainerField name={'Калоян'}
-                                                  inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}/>
-                                    <TrainerField name={'Кико'}
-                                                  inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}/>
-                                    <TrainerField name={'Марио'}
-                                                  inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}/>
+                            <Grid
+                                item
+                                xs={12}
+                                display='flex'
+                                flexDirection='row'
+                                style={{padding: '20px', paddingTop: '0px'}}
+                            >
+                                <Grid item xs={6} display='flex' flexDirection='column'>
+                                    <TrainerField
+                                        name={'Алекс'}
+                                        inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                    />
+                                    <TrainerField
+                                        name={'Йоан'}
+                                        inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                    />
+                                    <TrainerField
+                                        name={'Калоян'}
+                                        inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                    />
+                                    <TrainerField
+                                        name={'Кико'}
+                                        inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                    />
+                                    <TrainerField
+                                        name={'Марио'}
+                                        inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                    />
                                 </Grid>
-                                <Divider orientation="vertical" flexItem/>
-                                <Grid item xs={6} display="flex" flexDirection="column">
-                                    <TrainerField2 name={'Марто'}
-                                                   inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}/>
-                                    <TrainerField2 name={'Пеца'}
-                                                   inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}/>
-                                    <TrainerField2 name={'Рус'}
-                                                   inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}/>
-                                    <TrainerField2 name={'Стели'}
-                                                   inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}/>
-                                    <Grid item xs={12} display="flex" flexDirection="row" alignItems="center"/>
+                                <Divider orientation='vertical' flexItem />
+                                <Grid item xs={6} display='flex' flexDirection='column'>
+                                    <TrainerField2
+                                        name={'Марто'}
+                                        inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                    />
+                                    <TrainerField2
+                                        name={'Пеца'}
+                                        inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                    />
+                                    <TrainerField2
+                                        name={'Рус'}
+                                        inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                    />
+                                    <TrainerField2
+                                        name={'Стели'}
+                                        inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                    />
+                                    <Grid item xs={12} display='flex' flexDirection='row' alignItems='center' />
                                 </Grid>
                             </Grid>
 
-                            <Divider/>
+                            <Divider />
 
-                            <Grid item xs={12} style={{padding: "20px"}} display="flex" justifyContent="center"
-                                  alignItems="center">
-                                <label style={{fontWeight: "bold", fontFamily: fontHeader}}>Експорт:</label>
+                            <Grid
+                                item
+                                xs={12}
+                                style={{padding: '20px'}}
+                                display='flex'
+                                justifyContent='center'
+                                alignItems='center'
+                            >
+                                <label style={{fontWeight: 'bold', fontFamily: fontHeader}}>Експорт:</label>
                             </Grid>
 
-                            <Grid item xs={12} display="flex" justifyContent="center"
-                                  style={{paddingLeft: "20px", paddingRight: "20px"}}
-                                  alignItems="center">
+                            <Grid
+                                item
+                                xs={12}
+                                display='flex'
+                                justifyContent='center'
+                                style={{paddingLeft: '20px', paddingRight: '20px'}}
+                                alignItems='center'
+                            >
                                 <Grid item xs={3}>
-                                    <Stack direction="row">
-                                        <Button variant="contained"
-                                                onClick={calculateAndGenerateExport}
-                                                sx={{
-                                                    WebkitTextStrokeWidth: 'medium',
-                                                    width: '-webkit-fill-available'
-                                                }}>Calculate</Button>
+                                    <Stack direction='row'>
+                                        <Button
+                                            variant='contained'
+                                            onClick={calculateAndGenerateExport}
+                                            sx={{
+                                                WebkitTextStrokeWidth: 'medium',
+                                                width: '-webkit-fill-available',
+                                            }}
+                                        >
+                                            Calculate
+                                        </Button>
                                         <p>{result}</p>
                                     </Stack>
                                 </Grid>
                                 <Grid item xs={1}></Grid>
                                 <Grid item xs={8}>
                                     <TextField
-                                        id="outlined-basic"
-                                        variant="outlined"
-                                        value="Тука ще се показва дали е успешно или не"
+                                        id='outlined-basic'
+                                        variant='outlined'
+                                        value='Тука ще се показва дали е успешно или не'
                                         InputProps={{readOnly: true}}
                                         sx={{width: '-webkit-fill-available'}}
                                     />
                                 </Grid>
                             </Grid>
-
                         </Grid>
 
-                        <Grid item xs={4} display="flex" justifyContent="center" alignItems="center">
-                            <Logo width="80%" height="80%"/>
+                        <Grid item xs={4} display='flex' justifyContent='center' alignItems='center'>
+                            <Logo width='80%' height='80%' />
                         </Grid>
                     </Grid>
                 </Grid>
@@ -212,4 +257,4 @@ const App: React.FC = () => {
     );
 };
 
-root.render(<App/>);
+root.render(<App />);
