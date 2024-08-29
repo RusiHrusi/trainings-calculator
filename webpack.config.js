@@ -38,11 +38,13 @@ module.exports = {
     output: {
         filename: '[name].[contenthash].js',
         path: path.resolve(__dirname, 'dist'),
-        clean: true, // Ensures the output directory is cleaned before each build
+        publicPath: './',
+        clean: true,
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: './src/index.html'
+            template: './src/index.html',
+            inject: 'body', // Ensure the script tag is injected into the body
         }),
         new BundleAnalyzerPlugin({
             analyzerMode: 'static',
@@ -58,5 +60,13 @@ module.exports = {
     },
     cache: {
         type: 'filesystem',
+    },
+    devServer: {
+        static: {
+            directory: path.join(__dirname, 'dist'),
+        },
+        compress: false,
+        port: 8080,
+        historyApiFallback: true, // Ensures that the dev server serves index.html for all routes
     },
 };

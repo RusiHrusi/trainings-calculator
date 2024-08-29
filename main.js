@@ -1,5 +1,5 @@
 const {app, BrowserWindow, ipcMain} = require('electron');
-const {writeFile} = require("fs/promises");
+const {writeFile} = require('fs/promises');
 const path = require('path');
 
 if (require('electron-squirrel-startup')) app.quit();
