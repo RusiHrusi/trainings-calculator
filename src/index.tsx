@@ -278,7 +278,7 @@ const App: React.FC = () => {
                                     <TextField
                                         id='outlined-basic'
                                         variant='outlined'
-                                        value='Тука ще се показва дали е успешно или не'
+                                        value=''
                                         InputProps={{readOnly: true}}
                                         sx={{width: '-webkit-fill-available'}}
                                     />

@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
     mode: 'development',
@@ -38,18 +39,17 @@ module.exports = {
     output: {
         filename: '[name].[contenthash].js',
         path: path.resolve(__dirname, 'dist'),
-        publicPath: './',
-        clean: true,
+        clean: true, // Ensures the output directory is cleaned before each build
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: './src/index.html',
-            inject: 'body', // Ensure the script tag is injected into the body
+            template: './src/index.html'
         }),
         new BundleAnalyzerPlugin({
             analyzerMode: 'static',
             openAnalyzer: false,
         }),
+        new CleanWebpackPlugin(), // Add this line
     ],
     optimization: {
         minimize: true,
@@ -65,8 +65,12 @@ module.exports = {
         static: {
             directory: path.join(__dirname, 'dist'),
         },
-        compress: false,
+        compress: true,
         port: 8080,
-        historyApiFallback: true, // Ensures that the dev server serves index.html for all routes
+        open: true,
+        hot: true,
+        devMiddleware: {
+            writeToDisk: true,
+        },
     },
 };
