@@ -32,15 +32,15 @@ const App: React.FC = () => {
 
     const [trainingsPerTrainer, setTrainingsPerTrainer] = useState({});
 
-    const handleSelectChange = (event: React.ChangeEvent<{name?: string; value: unknown}>) => {
+    const handleSelectChange = (event: React.ChangeEvent<{ name?: string; value: unknown }>) => {
         setSelectedAuthor(event.target.value as string);
     };
 
-    const handleMoneyChange = (event: React.ChangeEvent<{name?: string; value: unknown}>) => {
+    const handleMoneyChange = (event: React.ChangeEvent<{ name?: string; value: unknown }>) => {
         setAllMoney(parseInt(event.target.value as string));
     };
 
-    const handleTrainingsCountChange = (event: React.ChangeEvent<{name?: string; value: unknown}>) => {
+    const handleTrainingsCountChange = (event: React.ChangeEvent<{ name?: string; value: unknown }>) => {
         setTrainingDays(parseInt(event.target.value as string));
     };
 
@@ -155,7 +155,7 @@ const App: React.FC = () => {
                                 </Grid>
                             </Grid>
 
-                            <Divider />
+                            <Divider/>
 
                             <Grid
                                 item
@@ -207,7 +207,7 @@ const App: React.FC = () => {
                                         removeTrainer={removeTrainer}
                                     />
                                 </Grid>
-                                <Divider orientation='vertical' flexItem />
+                                <Divider orientation='vertical' flexItem/>
                                 <Grid item xs={6} display='flex' flexDirection='column'>
                                     <TrainerField2
                                         name={'Марто'}
@@ -233,11 +233,11 @@ const App: React.FC = () => {
                                         addTrainer={addTrainer}
                                         removeTrainer={removeTrainer}
                                     />
-                                    <Grid item xs={12} display='flex' flexDirection='row' alignItems='center' />
+                                    <Grid item xs={12} display='flex' flexDirection='row' alignItems='center'/>
                                 </Grid>
                             </Grid>
 
-                            <Divider />
+                            <Divider/>
 
                             <Grid
                                 item
@@ -287,7 +287,7 @@ const App: React.FC = () => {
                         </Grid>
 
                         <Grid item xs={4} display='flex' justifyContent='center' alignItems='center'>
-                            <Logo width='80%' height='80%' />
+                            <Logo width='80%' height='80%'/>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -297,4 +297,4 @@ const App: React.FC = () => {
     );
 };
 
-root.render(<App />);
+root.render(<App/>);
