@@ -1,17 +1,7 @@
 import {format} from 'date-fns';
 
-export interface Statistics {
-    allMoney: number;
-    trainingDays: number;
-    clubMoney: number;
-    totalTrainersMoney: number;
-    payments: {
-        [key: string]: number;
-    };
-    trainingsPerTrainer: {
-        [key: string]: number;
-    };
-}
+import {Statistics, TrainingsPerTrainer} from './global';
+import {isElectron} from './utils';
 
 export const calcStatistics = (
     allMoney: number,
@@ -60,7 +50,7 @@ export const calcStatistics = (
     };
 };
 
-export const generateExportText = (userName: string, statistics: Statistics) => {
+const generateExportText = (userName: string, statistics: Statistics) => {
     const now = new Date();
     const formattedDate = format(now, 'MM/dd/yyyy HH:mm:ss');
 
@@ -82,4 +72,33 @@ export const generateExportText = (userName: string, statistics: Statistics) => 
     }
 
     return exportText;
+};
+
+export const calculateAndGenerateExport = async (
+    allMoney: number,
+    trainingDays: number,
+    trainingsPerTrainer: TrainingsPerTrainer,
+    username: string,
+) => {
+    if (isElectron()) {
+        const statistics = calcStatistics(allMoney, trainingDays, trainingsPerTrainer);
+        console.log(statistics);
+        const exportText = generateExportText(username, statistics);
+
+        const datetime = new Date()
+            .toLocaleDateString('en-GB', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+            })
+            .replace(/\//g, '-');
+        const fileName = `Export_${username}_${datetime}`;
+        const {ipcRenderer} = window.require('electron');
+
+        ipcRenderer.send('write-to-file', {fileName, content: exportText});
+    } else {
+        console.log('Not running in Electron environment');
+        const statistics = calcStatistics(allMoney, trainingDays, trainingsPerTrainer);
+        console.log(statistics);
+    }
 };
