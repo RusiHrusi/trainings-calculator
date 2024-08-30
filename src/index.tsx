@@ -4,7 +4,14 @@ import ReactDOM from 'react-dom/client';
 
 // @ts-ignore
 import Logo from './assets/logo1.svg';
-import {fontHeader, LabeledSelection, LabelledTextField, TrainerField, TrainerField2} from './components';
+import {
+    fontHeader,
+    LabeledSelection,
+    LabelledTextField,
+    TrainerField,
+    TrainerField2,
+    TrainingsPerTrainer,
+} from './components';
 import {calcStatistics, generateExportText} from './Statistics';
 
 declare global {
@@ -30,17 +37,17 @@ const App: React.FC = () => {
     const [allMoney, setAllMoney] = useState<number>(0);
     const [trainingDays, setTrainingDays] = useState<number>(0);
 
-    const [trainingsPerTrainer, setTrainingsPerTrainer] = useState({});
+    const [trainingsPerTrainer, setTrainingsPerTrainer] = useState<TrainingsPerTrainer>({});
 
-    const handleSelectChange = (event: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+    const handleSelectChange = (event: React.ChangeEvent<{name?: string; value: unknown}>) => {
         setSelectedAuthor(event.target.value as string);
     };
 
-    const handleMoneyChange = (event: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+    const handleMoneyChange = (event: React.ChangeEvent<{name?: string; value: unknown}>) => {
         setAllMoney(parseInt(event.target.value as string));
     };
 
-    const handleTrainingsCountChange = (event: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+    const handleTrainingsCountChange = (event: React.ChangeEvent<{name?: string; value: unknown}>) => {
         setTrainingDays(parseInt(event.target.value as string));
     };
 
@@ -51,11 +58,11 @@ const App: React.FC = () => {
         }));
     };
 
-    const removeTrainer = (name: string) => {
+    const removeTrainer = (trainerName: string) => {
         setTrainingsPerTrainer((prevState) => {
             const newState = {...prevState};
             // @ts-ignore
-            delete newState[name];
+            delete newState[trainerName];
             return newState;
         });
     };
@@ -67,6 +74,14 @@ const App: React.FC = () => {
     //     yoan: 3,
     //     rus: 9,
     // };
+
+    const updateTrainerTrainings = (event: React.ChangeEvent<{value: unknown}>, trainerName: string) => {
+        const trainingsCount = parseInt(event.target.value as string);
+        setTrainingsPerTrainer((prevState) => ({
+            ...prevState,
+            [trainerName]: trainingsCount,
+        }));
+    };
 
     useEffect(() => {
         console.log('Selected author: ', selectedAuthor);
@@ -87,6 +102,7 @@ const App: React.FC = () => {
     const calculateAndGenerateExport = async () => {
         if (isElectron()) {
             const statistics = calcStatistics(allMoney, trainingDays, trainingsPerTrainer);
+            console.log(statistics);
             const exportText = generateExportText(username, statistics);
 
             const datetime = new Date()
@@ -103,10 +119,12 @@ const App: React.FC = () => {
             setResult('File has been saved!');
         } else {
             console.log('Not running in Electron environment');
+            const statistics = calcStatistics(allMoney, trainingDays, trainingsPerTrainer);
+            console.log(statistics);
         }
     };
 
-    const handleKeyPress = (event: React.KeyboardEvent) => {
+    const handleKeyPressNumbersOnly = (event: React.KeyboardEvent) => {
         const charCode = event.which ? event.which : event.keyCode;
         if (charCode < 48 || charCode > 57) {
             event.preventDefault();
@@ -139,7 +157,7 @@ const App: React.FC = () => {
                                     <LabelledTextField
                                         label='Пари:'
                                         width='100px'
-                                        inputProps={{onKeyPress: handleKeyPress, maxLength: 6}}
+                                        inputProps={{onKeyPress: handleKeyPressNumbersOnly, maxLength: 6}}
                                         value={allMoney ? allMoney.toString() : ''}
                                         onChange={handleMoneyChange}
                                     />
@@ -148,14 +166,14 @@ const App: React.FC = () => {
                                     <LabelledTextField
                                         label='Тренировки:'
                                         width='50px'
-                                        inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                        inputProps={{onKeyPress: handleKeyPressNumbersOnly, maxLength: 2}}
                                         value={trainingDays ? trainingDays.toString() : ''}
                                         onChange={handleTrainingsCountChange}
                                     />
                                 </Grid>
                             </Grid>
 
-                            <Divider/>
+                            <Divider />
 
                             <Grid
                                 item
@@ -178,66 +196,84 @@ const App: React.FC = () => {
                                 <Grid item xs={6} display='flex' flexDirection='column'>
                                     <TrainerField
                                         name={'Алекс'}
-                                        inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                        trainingsPerTrainer={trainingsPerTrainer}
+                                        inputProps={{onKeyPress: handleKeyPressNumbersOnly, maxLength: 2}}
                                         addTrainer={addTrainer}
                                         removeTrainer={removeTrainer}
+                                        updateTrainerTrainings={updateTrainerTrainings}
                                     />
                                     <TrainerField
                                         name={'Йоан'}
-                                        inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                        trainingsPerTrainer={trainingsPerTrainer}
+                                        inputProps={{onKeyPress: handleKeyPressNumbersOnly, maxLength: 2}}
                                         addTrainer={addTrainer}
                                         removeTrainer={removeTrainer}
+                                        updateTrainerTrainings={updateTrainerTrainings}
                                     />
                                     <TrainerField
                                         name={'Калоян'}
-                                        inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                        trainingsPerTrainer={trainingsPerTrainer}
+                                        inputProps={{onKeyPress: handleKeyPressNumbersOnly, maxLength: 2}}
                                         addTrainer={addTrainer}
                                         removeTrainer={removeTrainer}
+                                        updateTrainerTrainings={updateTrainerTrainings}
                                     />
                                     <TrainerField
                                         name={'Кико'}
-                                        inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                        trainingsPerTrainer={trainingsPerTrainer}
+                                        inputProps={{onKeyPress: handleKeyPressNumbersOnly, maxLength: 2}}
                                         addTrainer={addTrainer}
                                         removeTrainer={removeTrainer}
+                                        updateTrainerTrainings={updateTrainerTrainings}
                                     />
                                     <TrainerField
                                         name={'Марио'}
-                                        inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                        trainingsPerTrainer={trainingsPerTrainer}
+                                        inputProps={{onKeyPress: handleKeyPressNumbersOnly, maxLength: 2}}
                                         addTrainer={addTrainer}
                                         removeTrainer={removeTrainer}
+                                        updateTrainerTrainings={updateTrainerTrainings}
                                     />
                                 </Grid>
-                                <Divider orientation='vertical' flexItem/>
+                                <Divider orientation='vertical' flexItem />
                                 <Grid item xs={6} display='flex' flexDirection='column'>
                                     <TrainerField2
                                         name={'Марто'}
-                                        inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                        trainingsPerTrainer={trainingsPerTrainer}
+                                        inputProps={{onKeyPress: handleKeyPressNumbersOnly, maxLength: 2}}
                                         addTrainer={addTrainer}
                                         removeTrainer={removeTrainer}
+                                        updateTrainerTrainings={updateTrainerTrainings}
                                     />
                                     <TrainerField2
                                         name={'Пеца'}
-                                        inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                        trainingsPerTrainer={trainingsPerTrainer}
+                                        inputProps={{onKeyPress: handleKeyPressNumbersOnly, maxLength: 2}}
                                         addTrainer={addTrainer}
                                         removeTrainer={removeTrainer}
+                                        updateTrainerTrainings={updateTrainerTrainings}
                                     />
                                     <TrainerField2
                                         name={'Рус'}
-                                        inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                        trainingsPerTrainer={trainingsPerTrainer}
+                                        inputProps={{onKeyPress: handleKeyPressNumbersOnly, maxLength: 2}}
                                         addTrainer={addTrainer}
                                         removeTrainer={removeTrainer}
+                                        updateTrainerTrainings={updateTrainerTrainings}
                                     />
                                     <TrainerField2
                                         name={'Стели'}
-                                        inputProps={{onKeyPress: handleKeyPress, maxLength: 2}}
+                                        trainingsPerTrainer={trainingsPerTrainer}
+                                        inputProps={{onKeyPress: handleKeyPressNumbersOnly, maxLength: 2}}
                                         addTrainer={addTrainer}
                                         removeTrainer={removeTrainer}
+                                        updateTrainerTrainings={updateTrainerTrainings}
                                     />
-                                    <Grid item xs={12} display='flex' flexDirection='row' alignItems='center'/>
+                                    <Grid item xs={12} display='flex' flexDirection='row' alignItems='center' />
                                 </Grid>
                             </Grid>
 
-                            <Divider/>
+                            <Divider />
 
                             <Grid
                                 item
@@ -287,7 +323,7 @@ const App: React.FC = () => {
                         </Grid>
 
                         <Grid item xs={4} display='flex' justifyContent='center' alignItems='center'>
-                            <Logo width='80%' height='80%'/>
+                            <Logo width='80%' height='80%' />
                         </Grid>
                     </Grid>
                 </Grid>
@@ -297,4 +333,4 @@ const App: React.FC = () => {
     );
 };
 
-root.render(<App/>);
+root.render(<App />);
