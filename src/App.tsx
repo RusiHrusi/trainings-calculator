@@ -147,7 +147,7 @@ export const App: React.FC = () => {
             if (trainingsSum !== trainingDays * 2) {
                 newTrainersErrors.trainingsPerTrainerSum = true;
                 newTrainersHelperTexts.trainingsPerTrainerSum =
-                    'Броят тренировъчни дни (х2) не отговаря на сумата от броя тренировки треньори.';
+                    'Броят тренировъчни дни (х2) не отговаря на сумата от броя тренировки от треньори.';
                 isValid = false;
                 trainersError = true;
             }
