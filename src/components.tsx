@@ -21,6 +21,10 @@ export interface LabelledSelection {
     onChange: (event: React.ChangeEvent<{value: unknown}>) => void;
 }
 
+export interface TrainingsPerTrainer {
+    [key: string]: number
+}
+
 export const LabelledTextField: React.FC<LabelledTextFieldProps> = ({label, width, inputProps, value, onChange}) => (
     <Grid item xs={12} display='flex' flexDirection='row' alignItems='center' justifyContent='center'>
         <label style={{fontFamily: fontHeader, paddingRight: '10px'}}>{label}</label>
@@ -57,13 +61,22 @@ export const LabeledSelection: React.FC<LabelledSelection> = ({label, width, opt
 );
 
 export interface TrainerFieldProps {
+    trainingsPerTrainer: TrainingsPerTrainer,
     name: string;
     inputProps: object;
     addTrainer: (name: string) => void;
     removeTrainer: (name: string) => void;
+    updateTrainerTrainings: (event: React.ChangeEvent<{ value: unknown }>, trainerName: string) => void;
 }
 
-export const TrainerField: React.FC<TrainerFieldProps> = ({name, inputProps, addTrainer, removeTrainer}) => {
+export const TrainerField: React.FC<TrainerFieldProps> = ({
+    name,
+    trainingsPerTrainer,
+    inputProps,
+    addTrainer,
+    removeTrainer,
+    updateTrainerTrainings,
+}) => {
     const [checked, setChecked] = useState(false);
 
     const handleCheckboxChange = () => {
@@ -94,6 +107,8 @@ export const TrainerField: React.FC<TrainerFieldProps> = ({name, inputProps, add
                     inputProps={inputProps}
                     disabled={!checked}
                     autoComplete='off'
+                    onChange={(event) => updateTrainerTrainings(event, name)}
+                    value={trainingsPerTrainer[name] ? trainingsPerTrainer[name] : ''}
                 />
             </Grid>
             <Grid item xs={3}></Grid>
@@ -101,7 +116,14 @@ export const TrainerField: React.FC<TrainerFieldProps> = ({name, inputProps, add
     );
 };
 
-export const TrainerField2: React.FC<TrainerFieldProps> = ({name, inputProps, addTrainer, removeTrainer}) => {
+export const TrainerField2: React.FC<TrainerFieldProps> = ({
+    trainingsPerTrainer,
+    name,
+    inputProps,
+    addTrainer,
+    removeTrainer,
+    updateTrainerTrainings,
+}) => {
     const [checked, setChecked] = useState(false);
 
     const handleCheckboxChange = () => {
@@ -133,6 +155,8 @@ export const TrainerField2: React.FC<TrainerFieldProps> = ({name, inputProps, ad
                     inputProps={inputProps}
                     disabled={!checked}
                     autoComplete='off'
+                    onChange={(event) => updateTrainerTrainings(event, name)}
+                    value={trainingsPerTrainer[name] ? trainingsPerTrainer[name] : ''}
                 />
             </Grid>
         </Grid>
