@@ -5,12 +5,26 @@ import React, {useState} from 'react';
 
 export const fontHeader = `"Roboto","Helvetica","Arial",sans-serif`;
 
+export interface GeneralErrors {
+    allMoney: boolean;
+    selectedAuthor: boolean;
+    trainingDays: boolean;
+}
+
+export interface GeneralHelperTexts {
+    allMoney: string;
+    selectedAuthor: string;
+    trainingDays: string;
+}
+
 export interface LabelledTextFieldProps {
     label: string;
     width: string;
     inputProps?: object;
     value: string;
     onChange: (event: React.ChangeEvent<{value: unknown}>) => void;
+    error?: boolean;
+    helperText?: string;
 }
 
 export interface LabelledSelection {
@@ -19,13 +33,23 @@ export interface LabelledSelection {
     options: string[];
     value: string;
     onChange: (event: React.ChangeEvent<{value: unknown}>) => void;
+    error?: boolean;
+    helperText?: string;
 }
 
 export interface TrainingsPerTrainer {
-    [key: string]: number
+    [key: string]: number;
 }
 
-export const LabelledTextField: React.FC<LabelledTextFieldProps> = ({label, width, inputProps, value, onChange}) => (
+export const LabelledTextField: React.FC<LabelledTextFieldProps> = ({
+    label,
+    width,
+    inputProps,
+    value,
+    onChange,
+    error,
+    helperText,
+}) => (
     <Grid item xs={12} display='flex' flexDirection='row' alignItems='center' justifyContent='center'>
         <label style={{fontFamily: fontHeader, paddingRight: '10px'}}>{label}</label>
         <TextField
@@ -40,7 +64,15 @@ export const LabelledTextField: React.FC<LabelledTextFieldProps> = ({label, widt
     </Grid>
 );
 
-export const LabeledSelection: React.FC<LabelledSelection> = ({label, width, options, value, onChange}) => (
+export const LabeledSelection: React.FC<LabelledSelection> = ({
+    label,
+    width,
+    options,
+    value,
+    onChange,
+    error,
+    helperText,
+}) => (
     <Grid item xs={12} display='flex' flexDirection='row' alignItems='center' justifyContent='center'>
         <label style={{fontFamily: fontHeader, paddingRight: '10px'}}>{label}</label>
         <TextField
@@ -61,12 +93,12 @@ export const LabeledSelection: React.FC<LabelledSelection> = ({label, width, opt
 );
 
 export interface TrainerFieldProps {
-    trainingsPerTrainer: TrainingsPerTrainer,
+    trainingsPerTrainer: TrainingsPerTrainer;
     name: string;
     inputProps: object;
     addTrainer: (name: string) => void;
     removeTrainer: (name: string) => void;
-    updateTrainerTrainings: (event: React.ChangeEvent<{ value: unknown }>, trainerName: string) => void;
+    updateTrainerTrainings: (event: React.ChangeEvent<{value: unknown}>, trainerName: string) => void;
 }
 
 export const TrainerField: React.FC<TrainerFieldProps> = ({

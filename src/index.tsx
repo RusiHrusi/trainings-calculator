@@ -1,11 +1,13 @@
-import {Button, Divider, Grid, Stack, TextField} from '@mui/material';
-import React, {useEffect, useState} from 'react';
+import {Button, Divider, Grid, Popover, Stack, TextField, Typography} from '@mui/material';
+import React, {useState} from 'react';
 import ReactDOM from 'react-dom/client';
 
 // @ts-ignore
 import Logo from './assets/logo1.svg';
 import {
     fontHeader,
+    GeneralErrors,
+    GeneralHelperTexts,
     LabeledSelection,
     LabelledTextField,
     TrainerField,
@@ -38,6 +40,27 @@ const App: React.FC = () => {
     const [trainingDays, setTrainingDays] = useState<number>(0);
 
     const [trainingsPerTrainer, setTrainingsPerTrainer] = useState<TrainingsPerTrainer>({});
+    const [generalErrors, setGeneralErrors] = useState<GeneralErrors>({
+        allMoney: false,
+        selectedAuthor: false,
+        trainingDays: false,
+    });
+
+    const [generalHelperTexts, setGeneralHelperTexts] = useState<GeneralHelperTexts>({
+        allMoney: '',
+        selectedAuthor: '',
+        trainingDays: '',
+    });
+
+    const [trainersErrors, setTrainersErrors] = useState({
+        trainingsPerTrainer: false,
+        trainingsPerTrainerSum: false,
+    });
+
+    const [trainersHelperTexts, setTrainersHelperTexts] = useState({
+        trainingsPerTrainer: '',
+        trainingsPerTrainerSum: '',
+    });
 
     const handleSelectChange = (event: React.ChangeEvent<{name?: string; value: unknown}>) => {
         setSelectedAuthor(event.target.value as string);
@@ -67,14 +90,6 @@ const App: React.FC = () => {
         });
     };
 
-    // const allMoney = 5764;
-    // const trainingDays = 9;
-    // const trainingsPerTrainer = {
-    //     mario: 6,
-    //     yoan: 3,
-    //     rus: 9,
-    // };
-
     const updateTrainerTrainings = (event: React.ChangeEvent<{value: unknown}>, trainerName: string) => {
         const trainingsCount = parseInt(event.target.value as string);
         setTrainingsPerTrainer((prevState) => ({
@@ -83,23 +98,91 @@ const App: React.FC = () => {
         }));
     };
 
-    useEffect(() => {
-        console.log('Selected author: ', selectedAuthor);
-    }, [selectedAuthor]);
+    const [trainersPopover, setTrainersPopover] = useState<HTMLElement | null>(null);
+    const [generalPopover, setGeneralPopover] = useState<HTMLElement | null>(null);
 
-    useEffect(() => {
-        console.log('All money: ', allMoney);
-    }, [allMoney]);
+    const handlePopoversClose = () => {
+        setTrainersPopover(null);
+        setGeneralPopover(null);
+    };
 
-    useEffect(() => {
-        console.log('Training days: ', trainingDays);
-    }, [trainingDays]);
+    const trainersPopoverOpen = Boolean(trainersPopover);
+    const generalPopoverOpen = Boolean(generalPopover);
 
-    useEffect(() => {
-        console.log('Trainings per trainer: ', JSON.stringify(trainingsPerTrainer));
-    }, [trainingsPerTrainer]);
+    const trainersPopoverId = trainersPopoverOpen ? 'trainers-popover' : undefined;
+    const generalPopoverId = generalPopoverOpen ? 'general-popover' : undefined;
+
+    const validateFields = () => {
+        let isValid = true;
+
+        let generalError = false;
+        let trainersError = false;
+
+        const newGeneralErrors = {
+            allMoney: false,
+            selectedAuthor: false,
+            trainingDays: false,
+        };
+
+        const newTrainersErrors = {
+            trainingsPerTrainer: false,
+            trainingsPerTrainerSum: false,
+        };
+
+        const newGeneralHelperTexts = {
+            allMoney: '',
+            selectedAuthor: '',
+            trainingDays: '',
+        };
+
+        const newTrainersHelperTexts = {
+            trainingsPerTrainer: '',
+            trainingsPerTrainerSum: '',
+        };
+
+        if (!allMoney) {
+            newGeneralErrors.allMoney = true;
+            newGeneralHelperTexts.allMoney = 'Невалидна сума пари.';
+            isValid = false;
+            generalError = true;
+        }
+
+        if (!selectedAuthor) {
+            newGeneralErrors.selectedAuthor = true;
+            newGeneralHelperTexts.selectedAuthor = 'Липсва автор.';
+            isValid = false;
+            generalError = true;
+        }
+
+        if (!trainingDays) {
+            newGeneralErrors.trainingDays = true;
+            newGeneralHelperTexts.trainingDays = 'Невалиден брой тренировки.';
+            isValid = false;
+            generalError = true;
+        }
+
+        // TODO: add trainers validations
+
+        if (generalError) {
+            const generalGrid = document.getElementById('generalGrid');
+            setGeneralPopover(generalGrid);
+        }
+
+        if (trainersError) {
+            const trainersGrid = document.getElementById('trainersGrid');
+            setGeneralPopover(trainersPopover);
+        }
+
+        setGeneralErrors(newGeneralErrors);
+        setGeneralHelperTexts(newGeneralHelperTexts);
+        return isValid;
+    };
 
     const calculateAndGenerateExport = async () => {
+        if (!validateFields()) {
+            return;
+        }
+
         if (isElectron()) {
             const statistics = calcStatistics(allMoney, trainingDays, trainingsPerTrainer);
             console.log(statistics);
@@ -143,7 +226,14 @@ const App: React.FC = () => {
                                 <label style={{fontWeight: 'bold', fontFamily: fontHeader}}>Параметри:</label>
                             </Grid>
 
-                            <Grid item xs={12} display='flex' flexDirection='row' style={{padding: '20px'}}>
+                            <Grid
+                                item
+                                xs={12}
+                                id={'generalGrid'}
+                                display='flex'
+                                flexDirection='row'
+                                style={{padding: '20px'}}
+                            >
                                 <Grid item xs={4}>
                                     <LabeledSelection
                                         label={'Изготвил:'}
@@ -171,6 +261,31 @@ const App: React.FC = () => {
                                         onChange={handleTrainingsCountChange}
                                     />
                                 </Grid>
+                                <Popover
+                                    id={generalPopoverId}
+                                    open={generalPopoverOpen}
+                                    anchorEl={generalPopover}
+                                    onClose={handlePopoversClose}
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'center',
+                                    }}
+                                    transformOrigin={{
+                                        vertical: 'top', // 'top', 'bottom', 'center'
+                                        horizontal: 'center', // 'left', 'right', 'center'
+                                    }}
+                                >
+                                    <Typography sx={{ p: 2, color: 'red', whiteSpace: 'pre-line' }}>
+                                        {Object.keys(generalErrors)
+                                            .map((k) =>
+                                                generalErrors[k as keyof GeneralErrors]
+                                                    ? '❌ - ' + generalHelperTexts[k as keyof GeneralHelperTexts]
+                                                    : null,
+                                            )
+                                            .filter((v) => v !== null)
+                                            .join('\n')}
+                                    </Typography>
+                                </Popover>
                             </Grid>
 
                             <Divider />
@@ -188,6 +303,7 @@ const App: React.FC = () => {
 
                             <Grid
                                 item
+                                id='trainersGrid'
                                 xs={12}
                                 display='flex'
                                 flexDirection='row'
@@ -271,6 +387,22 @@ const App: React.FC = () => {
                                     />
                                     <Grid item xs={12} display='flex' flexDirection='row' alignItems='center' />
                                 </Grid>
+                                <Popover
+                                    id={trainersPopoverId}
+                                    open={trainersPopoverOpen}
+                                    anchorEl={trainersPopover}
+                                    onClose={handlePopoversClose}
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'center',
+                                    }}
+                                    transformOrigin={{
+                                        vertical: 'top', // 'top', 'bottom', 'center'
+                                        horizontal: 'center', // 'left', 'right', 'center'
+                                    }}
+                                >
+                                    <Typography sx={{p: 2, color: 'red'}}>Error</Typography>
+                                </Popover>
                             </Grid>
 
                             <Divider />
