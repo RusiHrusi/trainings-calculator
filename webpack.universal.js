@@ -12,6 +12,7 @@ module.exports = {
             {
                 test: /\.tsx?$/,
                 use: [
+                    // TODO: transpileOnly gives me unknown compiler option when present in ts.config???
                     'ts-loader',
                     {
                         loader: 'thread-loader',

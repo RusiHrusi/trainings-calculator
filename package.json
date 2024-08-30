@@ -6,7 +6,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron-forge start",
-    "build": "webpack --mode development",
+    "build": "webpack --config webpack.universal.js --mode development",
     "watch-fast": "webpack serve --config webpack.browser.js --mode development --open --port 8080",
     "watch-universal": "webpack serve --config webpack.universal.js --mode development --open --port 8080",
     "electron-start": "chcp 65001 && electron .",
