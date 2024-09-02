@@ -52,11 +52,11 @@ export const calcStatistics = (
 
 const generateExportText = (userName: string, statistics: Statistics) => {
     const now = new Date();
-    const formattedDate = format(now, 'MM/dd/yyyy HH:mm:ss');
+    const formattedDate = format(now, 'dd/MM/yyyy HH:mm:ss');
 
     const capitalizedUsername = userName.charAt(0).toUpperCase() + userName.slice(1);
 
-    let exportText = `Експорт генериран от: ${capitalizedUsername}\n`;
+    let exportText = `Отчет генериран от: ${capitalizedUsername}\n`;
     exportText += `Дата и час: ${formattedDate}\n`;
     exportText += `Пари от тренировки: ${statistics.allMoney}лв.\n`;
     exportText += `Тренировъчни дни: ${statistics.trainingDays}\n`;
@@ -74,28 +74,27 @@ const generateExportText = (userName: string, statistics: Statistics) => {
     return exportText;
 };
 
-export const calculateAndGenerateExport = async (
+export const getDefaultFileName = (username: string): string => {
+    const datetime = new Date()
+        .toLocaleDateString('en-GB', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+        })
+        .replace(/\//g, '-');
+    return `Отчет_${username}_${datetime}`;
+}
+
+export const calculateAndGenerateExport = (
     allMoney: number,
     trainingDays: number,
     trainingsPerTrainer: TrainingsPerTrainer,
-    username: string,
+    author: string,
 ) => {
     if (isElectron()) {
         const statistics = calcStatistics(allMoney, trainingDays, trainingsPerTrainer);
         console.log(statistics);
-        const exportText = generateExportText(username, statistics);
-
-        const datetime = new Date()
-            .toLocaleDateString('en-GB', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-            })
-            .replace(/\//g, '-');
-        const fileName = `Export_${username}_${datetime}`;
-        const {ipcRenderer} = window.require('electron');
-
-        ipcRenderer.send('write-to-file', {fileName, content: exportText});
+        return generateExportText(author, statistics);
     } else {
         console.log('Not running in Electron environment');
         const statistics = calcStatistics(allMoney, trainingDays, trainingsPerTrainer);

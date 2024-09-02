@@ -1,5 +1,6 @@
 import {Button, Divider, Grid, Stack, TextField} from '@mui/material';
-import React, {useState} from 'react';
+import {IpcRendererEvent} from 'electron';
+import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom/client';
 
 // @ts-ignore
@@ -7,8 +8,10 @@ import Logo from './assets/logo1.svg';
 import {GeneralData} from './components/GeneralData';
 import {TrainersData} from './components/TrainersData';
 import {GeneralErrors, GeneralHelperTexts, TrainersErrors, TrainersHelperTexts, TrainingsPerTrainer} from './global';
-import {calculateAndGenerateExport} from './Statistics';
+import {calculateAndGenerateExport, getDefaultFileName} from './Statistics';
 import {fontHeader} from './utils';
+
+const {ipcRenderer} = window.require('electron');
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
@@ -16,6 +19,8 @@ export const App: React.FC = () => {
     const [selectedAuthor, setSelectedAuthor] = useState('');
     const [allMoney, setAllMoney] = useState<number>(0);
     const [trainingDays, setTrainingDays] = useState<number>(0);
+
+    const [infoBox, setInfoBox] = useState('');
 
     const [generalErrors, setGeneralErrors] = useState<GeneralErrors>({
         allMoney: false,
@@ -39,6 +44,23 @@ export const App: React.FC = () => {
         trainingsPerTrainerSum: '',
     });
     const [trainersPopover, setTrainersPopover] = useState<HTMLElement | null>(null);
+
+    useEffect(() => {
+        const handleFileSaved = (event: IpcRendererEvent, {success, error}: {success: boolean; error?: string}) => {
+            if (success) {
+                setInfoBox('✅ Отчет генериран успешно.');
+            } else {
+                setInfoBox('❌ Проблем със запазването на файла.');
+                console.error('File save error:', error);
+            }
+        };
+
+        ipcRenderer.on('file-saved', handleFileSaved);
+
+        return () => {
+            ipcRenderer.removeListener('file-saved', handleFileSaved);
+        };
+    }, []);
 
     const generalPopoverOpen = Boolean(generalPopover);
     const generalPopoverId = generalPopoverOpen ? 'general-popover' : undefined;
@@ -171,9 +193,23 @@ export const App: React.FC = () => {
         return isValid;
     };
 
+    const handleSaveFile = async (
+        allMoney: number,
+        trainingDays: number,
+        trainingsPerTrainer: TrainingsPerTrainer,
+        author: string,
+    ) => {
+        const defaultFileName = getDefaultFileName(author);
+        const filePath = await ipcRenderer.invoke('show-save-dialog', defaultFileName);
+        if (filePath) {
+            const exportText = calculateAndGenerateExport(allMoney, trainingDays, trainingsPerTrainer, author)
+            ipcRenderer.send('write-to-file', { filePath, content: exportText });
+        }
+    };
+
     return (
         <>
-            <Grid item xs={12} style={{height: '150px'}}></Grid>
+            <Grid item xs={12} style={{height: '100px'}}></Grid>
             <Grid container spacing={2}>
                 <Grid item xs={1}></Grid>
                 <Grid item xs={10}>
@@ -223,7 +259,7 @@ export const App: React.FC = () => {
                                 justifyContent='center'
                                 alignItems='center'
                             >
-                                <label style={{fontWeight: 'bold', fontFamily: fontHeader}}> Експорт:</label>
+                                <label style={{fontWeight: 'bold', fontFamily: fontHeader}}> Отчет:</label>
                             </Grid>
 
                             <Grid
@@ -240,7 +276,7 @@ export const App: React.FC = () => {
                                             variant='contained'
                                             onClick={async () => {
                                                 validateFields()
-                                                    ? await calculateAndGenerateExport(
+                                                    ? await handleSaveFile(
                                                           allMoney,
                                                           trainingDays,
                                                           trainingsPerTrainer,
@@ -253,7 +289,7 @@ export const App: React.FC = () => {
                                                 width: '-webkit-fill-available',
                                             }}
                                         >
-                                            Calculate
+                                            Генерирай
                                         </Button>
                                     </Stack>
                                 </Grid>
@@ -262,7 +298,7 @@ export const App: React.FC = () => {
                                     <TextField
                                         id='outlined-basic'
                                         variant='outlined'
-                                        value=''
+                                        value={infoBox}
                                         InputProps={{readOnly: true}}
                                         sx={{width: '-webkit-fill-available'}}
                                     />
