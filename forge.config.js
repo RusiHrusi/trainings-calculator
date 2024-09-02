@@ -4,6 +4,7 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 module.exports = {
   packagerConfig: {
     asar: true,
+    icon: '/src/assets/recreate' // Do not include the file extension
   },
   rebuildConfig: {},
   makers: [
@@ -11,7 +12,7 @@ module.exports = {
       name: '@electron-forge/maker-squirrel',
       config: {
         authors: 'RusHrus',
-        description: 'Les go!'
+        description: 'Sports club Recreate trainings calculator for managing income and payments.',
       },
     },
     {
