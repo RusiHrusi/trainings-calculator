@@ -12,6 +12,7 @@ function createWindow() {
             nodeIntegration: true,
             contextIsolation: false,
         },
+        icon: __dirname + '/src/assets/recreate.ico'
     });
 
     const indexPath = path.join(__dirname, 'dist', 'index.html');
