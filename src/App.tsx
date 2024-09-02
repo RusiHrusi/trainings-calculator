@@ -202,8 +202,8 @@ export const App: React.FC = () => {
         const defaultFileName = getDefaultFileName(author);
         const filePath = await ipcRenderer.invoke('show-save-dialog', defaultFileName);
         if (filePath) {
-            const exportText = calculateAndGenerateExport(allMoney, trainingDays, trainingsPerTrainer, author)
-            ipcRenderer.send('write-to-file', { filePath, content: exportText });
+            const exportText = calculateAndGenerateExport(allMoney, trainingDays, trainingsPerTrainer, author);
+            ipcRenderer.send('write-to-file', {filePath, content: exportText});
         }
     };
 
@@ -312,6 +312,14 @@ export const App: React.FC = () => {
                     </Grid>
                 </Grid>
                 <Grid item xs={1}></Grid>
+            </Grid>
+
+            <Grid container sx={{alignItems: 'flex-end', justifyContent: 'center'}}>
+                <Grid item xs={12} sx={{textAlign: 'right'}}>
+                    <p style={{position: 'absolute', bottom: '0', right: '0', margin: '0'}}>
+                        Application made by RusHrus for sports club Recreate.
+                    </p>
+                </Grid>
             </Grid>
         </>
     );
