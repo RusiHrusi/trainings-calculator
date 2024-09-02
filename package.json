@@ -1,12 +1,13 @@
 {
   "name": "recreate-calculator",
-  "productName": "Recreate Trainings Calculator.",
+  "productName": "Recreate Trainings Calculator",
   "version": "1.0.0",
   "description": "Sports club Recreate trainings calculator",
   "main": "main.js",
   "scripts": {
     "start": "electron-forge start",
     "build": "webpack --config webpack.universal.js --mode development",
+    "build-prod": "webpack --config webpack.prod.js --mode production",
     "watch-fast": "webpack serve --config webpack.browser.js --mode development --open --port 8080",
     "watch-universal": "webpack serve --config webpack.universal.js --mode development --open --port 8080",
     "electron-start": "chcp 65001 && electron .",
@@ -60,6 +61,17 @@
     "webpack-dev-server": "~5.0.4"
   },
   "build": {
-    "appId": "com.recreate-bg.trainings-calculator"
+    "appId": "com.recreate-bg.trainings-calculator",
+    "icon": "src/assets/recreate",
+    "win": {
+      "icon": "src/assets/recreate"
+    }
+  },
+  "build-prod": {
+    "appId": "com.recreate-bg.trainings-calculator",
+    "icon": "src/assets/recreate",
+    "win": {
+      "icon": "src/assets/recreate"
+    }
   }
 }

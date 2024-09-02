@@ -1,7 +1,6 @@
 import {Button, Divider, Grid, Stack, TextField} from '@mui/material';
 import {IpcRendererEvent} from 'electron';
 import React, {useEffect, useState} from 'react';
-import ReactDOM from 'react-dom/client';
 
 // @ts-ignore
 import Logo from './assets/logo1.svg';
@@ -12,8 +11,6 @@ import {calculateAndGenerateExport, getDefaultFileName} from './Statistics';
 import {fontHeader} from './utils';
 
 const {ipcRenderer} = window.require('electron');
-
-const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
 export const App: React.FC = () => {
     const [selectedAuthor, setSelectedAuthor] = useState('');
@@ -324,5 +321,3 @@ export const App: React.FC = () => {
         </>
     );
 };
-
-root.render(<App />);
