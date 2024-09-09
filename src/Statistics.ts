@@ -10,8 +10,35 @@ export const calcStatistics = (
         [key: string]: number;
     },
 ): Statistics => {
-    let clubMoney = allMoney / 2 - ((allMoney / 2) % 10) + (allMoney % 10);
-    let trainersMoney = allMoney / 2 - ((allMoney / 2) % 10);
+    const split = allMoney / 2;
+    const deviation = (allMoney % 10);
+    const splitDeviation = split % 10;
+
+    let clubMoney: number;
+    let trainersMoney: number;
+    if (deviation === 0) {
+        if (splitDeviation !== 0) {
+            clubMoney = allMoney / 2 - splitDeviation;
+            trainersMoney = allMoney / 2 + splitDeviation;
+        } else {
+            clubMoney = split - 10;
+            trainersMoney = split + 10;
+        }
+
+    } else {
+        const totalDeviationReduced = splitDeviation * 2;
+
+        if (totalDeviationReduced > 10) {
+            clubMoney = split - splitDeviation - 10;
+            trainersMoney = split - splitDeviation + 10;
+
+            trainersMoney += 10
+            clubMoney += totalDeviationReduced - 10;
+        } else {
+            clubMoney = split - splitDeviation + totalDeviationReduced - 10;
+            trainersMoney = split - splitDeviation + 10;
+        }
+    }
 
     const x = Object.values(trainingsPerTrainer).reduce((acc, value) => acc + value, 0);
 
@@ -33,6 +60,8 @@ export const calcStatistics = (
         surplusSum += trainersMoneyMap[t] % 10;
         trainersMoneyMap[t] = trainersMoneyMap[t] - (trainersMoneyMap[t] % 10);
     });
+
+    surplusSum = Math.round(surplusSum);
 
     if (!(surplusSum === 10 || surplusSum === 0)) {
         throw new Error('Invalid surplus sum from trainers money.');

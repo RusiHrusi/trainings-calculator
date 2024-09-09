@@ -20,11 +20,9 @@ export const TrainerField: React.FC<TrainerFieldProps> = ({
         setChecked(!checked);
         if (checked) {
             removeTrainer(name);
-            console.log('Trainer removed: ', name);
             // TODO: investigate why opposite of checked???
         } else {
             addTrainer(name);
-            console.log('Trainer added: ', name);
         }
     };
 
